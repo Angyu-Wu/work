@@ -47,9 +47,7 @@ def Raw_Data_Processing():
 
 
     parquet_file = directory+r'\Stock_Market_Dataset.parquet'
-    output.to_parquet(parquet_file,
-              compression='gzip')  
-    
+    fp.write(parquet_file, output, compression = 'GZIP')
     
 
 # %%
@@ -187,9 +185,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 
-import pandas as pd
-import os
-import fastparquet as fp
+
 
 #DAG_Raw_Data_Processing = Raw_Data_Processing()
 #DAG_Feature_Engineering = Feature_Engineering(Raw_Data_Processing)
@@ -231,6 +227,9 @@ DAG_Model_Serving = PythonOperator(
 )
 ready = DummyOperator(task_id = 'ready')
 
-DAG_Raw_Data_Processing 
+DAG_Raw_Data_Processing >> DAG_Feature_Engineering >>DAG_Integrate_ML_Training>>DAG_Model_Serving>>ready
+
+# %%
+
 
 
